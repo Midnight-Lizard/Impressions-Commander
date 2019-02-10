@@ -1,0 +1,25 @@
+image: impressions-commander:latest
+pullPolicy: IfNotPresent
+replicaCount: 1
+service:
+  name: impressions-commander
+  type: NodePort
+  externalPort: 80
+  internalPort: 80
+env:
+  IDENTITY_URL: https://identity.midnight-lizard.org
+  ALLOWED_ORIGINS: https://www.midnight-lizard.org
+  LIKES_QUEUE_CONFIG: |-
+    {
+      "TopicName": "likes-requests",
+      "ProducerSettings": {
+          "bootstrap.servers": "bootstrap.kafka:9092"
+        }
+    }
+  FAVORITES_QUEUE_CONFIG: |-
+    {
+      "TopicName": "favorites-requests",
+      "ProducerSettings": {
+          "bootstrap.servers": "bootstrap.kafka:9092"
+        }
+    }
