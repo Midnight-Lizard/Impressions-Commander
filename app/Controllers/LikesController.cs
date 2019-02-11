@@ -16,7 +16,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
     [ValidateModelState]
     [ApiVersion("1.0")]
     [Route("[controller]/[action]")]
-    public class LikeController : Controller
+    public class LikesController : Controller
     {
         protected readonly ILogger logger;
         protected readonly IRequestQueuer<LIKES_QUEUE_CONFIG> requestQueuer;
@@ -34,8 +34,8 @@ namespace MidnightLizard.Impressions.Commander.Controllers
             throw new UnauthorizedAccessException();
         }
 
-        public LikeController(
-            ILogger<LikeController> logger,
+        public LikesController(
+            ILogger<LikesController> logger,
             IRequestQueuer<LIKES_QUEUE_CONFIG> requestQueuer)
         {
             this.logger = logger;

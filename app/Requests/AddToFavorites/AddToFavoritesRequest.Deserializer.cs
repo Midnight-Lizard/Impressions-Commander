@@ -3,7 +3,7 @@
 namespace MidnightLizard.Impressions.Commander.Requests.AddToFavorites
 {
     [SchemaVersion(">=1")]
-    public class AddLikeRequestDeserializer_v1 : JsonRequestDeserializer<AddToFavoritesRequest>
+    public class AddToFavoritesRequestDeserializer_v1 : JsonRequestDeserializer<AddToFavoritesRequest>
     {
     }
 }
