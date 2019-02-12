@@ -4,6 +4,7 @@ using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MidnightLizard.Impressions.Commander.AutofacModules;
@@ -88,6 +89,9 @@ namespace MidnightLizard.Impressions.Commander
                 .WithOrigins(corsConfig.ALLOWED_ORIGINS.Split(','))
                 .AllowAnyHeader().AllowAnyMethod());
             app.UseAuthentication();
+            app.UseRewriter(new RewriteOptions().AddRewrite(
+                this.Configuration.GetValue<string>("REWRITE_TARGET"), "$1",
+                skipRemainingRules: true));
             app.UseMvc();
         }
     }

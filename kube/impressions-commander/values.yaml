@@ -7,6 +7,7 @@ service:
   externalPort: 80
   internalPort: 80
 env:
+  REWRITE_TARGET: ^impressions/commander/(.*)
   IDENTITY_URL: https://identity.midnight-lizard.org
   ALLOWED_ORIGINS: https://www.midnight-lizard.org
   LIKES_QUEUE_CONFIG: |-
