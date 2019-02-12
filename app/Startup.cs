@@ -89,9 +89,12 @@ namespace MidnightLizard.Impressions.Commander
                 .WithOrigins(corsConfig.ALLOWED_ORIGINS.Split(','))
                 .AllowAnyHeader().AllowAnyMethod());
             app.UseAuthentication();
-            app.UseRewriter(new RewriteOptions().AddRewrite(
-                this.Configuration.GetValue<string>("REWRITE_TARGET"), "$1",
-                skipRemainingRules: true));
+            var rewriteTargetRegex = this.Configuration.GetValue<string>("REWRITE_TARGET");
+            if (!string.IsNullOrEmpty(rewriteTargetRegex))
+            {
+                app.UseRewriter(new RewriteOptions().AddRewrite(
+                    rewriteTargetRegex, "$1", skipRemainingRules: true));
+            }
             app.UseMvc();
         }
     }
