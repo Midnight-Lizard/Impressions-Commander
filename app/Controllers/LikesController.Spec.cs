@@ -27,6 +27,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
         private readonly IRequestQueuer<LIKES_QUEUE_CONFIG> testQueuer;
         private readonly TestServer testServer;
         private readonly HttpClient testClient;
+        private readonly string testPath = "test/path";
 
         public LikesControllerSpec()
         {
@@ -46,6 +47,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
                     .AddSingleton<IRequestQueuer<LIKES_QUEUE_CONFIG>>(this.testQueuer))
                 .UseSetting(nameof(LIKES_QUEUE_CONFIG), queueConfig)
                 .UseSetting(nameof(FAVORITES_QUEUE_CONFIG), queueConfig)
+                .UseSetting("REWRITE_TARGET", $"^{this.testPath}/(.*)")
                 .UseSetting(nameof(CorsConfig.ALLOWED_ORIGINS), JsonConvert.SerializeObject(new CorsConfig
                 {
                     ALLOWED_ORIGINS = "localhost"
@@ -70,7 +72,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
             {
                 var json = JsonConvert.SerializeObject(this.correctRequest);
                 HttpContent jsonContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var result = await this.testClient.PostAsync("likes/add", jsonContent);
+                var result = await this.testClient.PostAsync($"{this.testPath}/likes/add", jsonContent);
 
                 result.StatusCode.Should().Be(HttpStatusCode.Accepted, await result.Content.ReadAsStringAsync());
 
@@ -84,7 +86,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
             {
                 var json = JsonConvert.SerializeObject(new AddLikeRequest());
                 HttpContent jsonContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var result = await this.testClient.PostAsync("likes/add", jsonContent);
+                var result = await this.testClient.PostAsync($"{this.testPath}/likes/add", jsonContent);
 
                 result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             }
@@ -95,7 +97,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
                 this.testClient.DefaultRequestHeaders.Remove("schema-version");
                 var json = JsonConvert.SerializeObject(this.correctRequest);
                 HttpContent jsonContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var result = await this.testClient.PostAsync("likes/add", jsonContent);
+                var result = await this.testClient.PostAsync($"{this.testPath}/likes/add", jsonContent);
                 result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             }
         }
@@ -114,7 +116,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
             {
                 var json = JsonConvert.SerializeObject(this.correctRequest);
                 HttpContent jsonContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var result = await this.testClient.PostAsync("likes/remove", jsonContent);
+                var result = await this.testClient.PostAsync($"{this.testPath}/likes/remove", jsonContent);
 
                 result.StatusCode.Should().Be(HttpStatusCode.Accepted, await result.Content.ReadAsStringAsync());
 
@@ -128,7 +130,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
             {
                 var json = JsonConvert.SerializeObject(new RemoveLikeRequest());
                 HttpContent jsonContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var result = await this.testClient.PostAsync("likes/remove", jsonContent);
+                var result = await this.testClient.PostAsync($"{this.testPath}/likes/remove", jsonContent);
 
                 result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             }
@@ -139,7 +141,7 @@ namespace MidnightLizard.Impressions.Commander.Controllers
                 this.testClient.DefaultRequestHeaders.Remove("schema-version");
                 var json = JsonConvert.SerializeObject(this.correctRequest);
                 HttpContent jsonContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
-                var result = await this.testClient.PostAsync("likes/remove", jsonContent);
+                var result = await this.testClient.PostAsync($"{this.testPath}/likes/remove", jsonContent);
                 result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             }
         }
