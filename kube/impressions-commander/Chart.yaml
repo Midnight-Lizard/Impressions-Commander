@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Midnight Lizard Impressions Commands API
+name: impressions-commander
+version: 0.1.0
