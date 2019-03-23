@@ -12,7 +12,6 @@ namespace MidnightLizard.Impressions.Commander.AutofacModules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<RequestSchemaVersionAccessor>().AsSelf();
-            builder.RegisterType<RequestBodyAccessor>().AsSelf();
         }
     }
 }

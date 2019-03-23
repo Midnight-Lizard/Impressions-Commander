@@ -14,7 +14,6 @@ namespace MidnightLizard.Impressions.Commander.Infrastructure.ModelBinding
     {
         private readonly IRequestMetaDeserializer requestMetaDeserializer;
         private readonly RequestSchemaVersionAccessor versionAccessor;
-        private readonly RequestBodyAccessor bodyAccessor;
         private readonly RequestModelBinder modelBinder;
         private readonly ModelBindingContext context;
         private readonly SchemaVersion testSchemaVersion = new SchemaVersion("1.3.0");
@@ -24,11 +23,7 @@ namespace MidnightLizard.Impressions.Commander.Infrastructure.ModelBinding
         {
             this.requestMetaDeserializer = Substitute.For<IRequestMetaDeserializer>();
             this.versionAccessor = Substitute.For<RequestSchemaVersionAccessor>();
-            this.bodyAccessor = Substitute.For<RequestBodyAccessor>();
-            this.modelBinder = new RequestModelBinder(
-                this.requestMetaDeserializer,
-                this.versionAccessor,
-                this.bodyAccessor);
+            this.modelBinder = new RequestModelBinder(this.requestMetaDeserializer, this.versionAccessor);
             this.context = Substitute.For<ModelBindingContext>();
 
             this.context.ModelType.Returns(typeof(AddLikeRequest));
@@ -36,7 +31,6 @@ namespace MidnightLizard.Impressions.Commander.Infrastructure.ModelBinding
             this.context.BindingSource = BindingSource.Body;
 
             this.versionAccessor.GetSchemaVersion(this.context).Returns(this.testSchemaVersion);
-            this.bodyAccessor.ReadAsync(this.context).Returns(this.testBody);
         }
 
         [It(nameof(RequestModelBinder.BindModelAsync))]
@@ -56,20 +50,12 @@ namespace MidnightLizard.Impressions.Commander.Infrastructure.ModelBinding
         }
 
         [It(nameof(RequestModelBinder.BindModelAsync))]
-        public async Task Should_read_Request__Body()
-        {
-            await this.modelBinder.BindModelAsync(this.context);
-
-            await this.bodyAccessor.Received(1).ReadAsync(this.context);
-        }
-
-        [It(nameof(RequestModelBinder.BindModelAsync))]
         public async Task Should_call_RequestSerializer()
         {
             await this.modelBinder.BindModelAsync(this.context);
 
             this.requestMetaDeserializer.Received(1)
-                .Deserialize(typeof(AddLikeRequest), this.testSchemaVersion, this.testBody);
+                .Deserialize(typeof(AddLikeRequest), this.testSchemaVersion, this.context);
         }
 
         [It(nameof(RequestModelBinder.BindModelAsync))]
@@ -84,7 +70,7 @@ namespace MidnightLizard.Impressions.Commander.Infrastructure.ModelBinding
         public async Task Should_set_ModelBindingContext__Result_to_Fail_when_Exception()
         {
             this.requestMetaDeserializer
-                .Deserialize(typeof(AddLikeRequest), this.testSchemaVersion, this.testBody)
+                .Deserialize(typeof(AddLikeRequest), this.testSchemaVersion, this.context)
                 .Returns(x => throw new Exception("test"));
 
             await this.modelBinder.BindModelAsync(this.context);
@@ -97,7 +83,7 @@ namespace MidnightLizard.Impressions.Commander.Infrastructure.ModelBinding
         {
             var testErrorMessage = "test error message";
             this.requestMetaDeserializer
-                .Deserialize(typeof(AddLikeRequest), this.testSchemaVersion, this.testBody)
+                .Deserialize(typeof(AddLikeRequest), this.testSchemaVersion, this.context)
                 .Returns(x => throw new Exception(testErrorMessage));
 
             await this.modelBinder.BindModelAsync(this.context);

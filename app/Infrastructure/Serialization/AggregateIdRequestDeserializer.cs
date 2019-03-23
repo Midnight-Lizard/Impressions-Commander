@@ -1,21 +1,20 @@
-﻿using MidnightLizard.Impressions.Commander.Infrastructure.Authentication;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MidnightLizard.Impressions.Commander.Requests.Common;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MidnightLizard.Impressions.Commander.Infrastructure.Serialization
 {
     public class AggregateIdRequestDeserializer<TRequest> : BaseRequestDeserializer<TRequest>
         where TRequest : DomainRequest, new()
     {
-        protected override TRequest DeserializeRequest(string aggregateId)
+        protected override TRequest DeserializeRequest(ModelBindingContext bindingContext)
         {
+            var aggId = Guid.Parse(bindingContext.ValueProvider
+                            .GetValue(bindingContext.BinderModelName)
+                            .FirstValue);
             return new TRequest
             {
-                AggregateId = Guid.Parse(aggregateId)
+                AggregateId = aggId
             };
         }
     }
