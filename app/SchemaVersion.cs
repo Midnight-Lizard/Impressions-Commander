@@ -21,7 +21,7 @@ namespace MidnightLizard.Impressions.Commander
             return Value.ToString();
         }
 
-        public static SchemaVersion Latest { get; } = new SchemaVersion("10.2.0");
+        public static SchemaVersion Latest { get; } = new SchemaVersion("10.4.0");
         public static SchemaVersion Unspecified { get; } = new SchemaVersion();
     }
 }
